@@ -10,6 +10,9 @@ import css from "../css/app.css"
 // Import dependencies
 //
 import "phoenix_html"
+import jQuery from 'jquery';
+window.jQuery = window.$ = jQuery; // Bootstrap requires a global "$" object.
+import "bootstrap";
 
 // Import local files
 //
