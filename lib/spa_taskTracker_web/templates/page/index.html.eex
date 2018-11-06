@@ -7,5 +7,6 @@
 </div>
 
 <script>
+console.log("script")
  window.tasks = <%= raw Jason.encode!(@tasks) %>;
 </script>

@@ -16,4 +16,4 @@ alias SpaTaskTracker.Tasks.Task
 pwhash = Argon2.hash_pwd_salt("pass1")
 
 Repo.insert!(%User{email: "alice@example.com", password_hash: pwhash})
-Repo.insert!(%Task{title: "spa", description: "blah", user_id: 1})
+Repo.insert!(%Task{title: "spa", description: "blah", duration: 15, user_id: 1})

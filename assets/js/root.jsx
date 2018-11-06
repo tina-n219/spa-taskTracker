@@ -5,7 +5,7 @@ import $ from 'jquery';
 
 export default function root_init(node) {
     let tasks = window.tasks;
-    ReactDOM.render(<Root taksts={tasks} />, node);
+    ReactDOM.render(<Root tasks={tasks} />, node);
   }
 
 class Root extends React.Component {
@@ -15,10 +15,13 @@ class Root extends React.Component {
             tasks: props.tasks,
         };
 
-        //this.fetch_tasks();
+    console.log("constructor");
+
+    this.fetch_tasks();
     }
 
     fetch_tasks() {
+      console.log("fetch")
         $.ajax("/api/v1/tasks", {
           method: "get",
           dataType: "json",
@@ -32,6 +35,8 @@ class Root extends React.Component {
       }
 
     render() {
+      console.log("render")
+      console.log(this.state.tasks);
     return <div>
         <Header />
         <TaskList tasks={this.state.tasks} />
@@ -66,8 +71,7 @@ function Header(_props) {
     return <div className="card col-4">
       <div className="card-body">
         <h2 className="card-title">{task.title}</h2>
-        <p className="card-text">{task.description} <br/>
-        assignedTo: {task.user_id}</p>
+        <p className="card-text">{task.description}</p>
       </div>
     </div>;
   }
