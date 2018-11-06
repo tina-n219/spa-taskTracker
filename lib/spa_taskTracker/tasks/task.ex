@@ -8,7 +8,7 @@ defmodule SpaTaskTracker.Tasks.Task do
     field :description, :string
     field :duration, :integer
     field :title, :string
-    field :assignedTo, :id
+    belongs_to :user, SpaTaskTracker.Users.User
 
     timestamps()
   end

@@ -5,13 +5,13 @@ defmodule SpaTaskTracker.Repo.Migrations.CreateTasks do
     create table(:tasks) do
       add :title, :string
       add :description, :text
-      add :completed, :boolean, default: false, null: false
+      add :completed, :boolean, default: false
       add :duration, :integer
-      add :assignedTo, references(:users, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nilify_all)
 
       timestamps()
     end
 
-    create index(:tasks, [:assignedTo])
+    create index(:tasks, [:user_id], unique: true)
   end
 end
