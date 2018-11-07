@@ -103,6 +103,26 @@ class Root extends React.Component {
         });
       }
 
+      registerAccount() {
+        let email = $('#regUser').val();
+        let pass = $('#regPassword').val();
+        console.log(email);
+        console.log(pass);
+        let newuser = {email: email, password_hash: pass};
+
+        $.ajax("/api/v1/users", {
+          method: "post",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: JSON.stringify({user: newuser}),
+          success: (resp) => {
+            console.log("succussful registration");
+            let state1 = _.assign({}, this.state, { session: resp.data });
+            this.setState(state1);
+          }
+        });
+      }
+
 
 
 
@@ -111,10 +131,10 @@ render() {
     return <option key={user.id} value={user.id}>{user.email}</option>
   }
 
-  if(this.state.session != null) {
+  if(this.state.session == null) {
     return <div>
       <Router>
-        <Login session={this.state.session} />
+        <Login session={this.state.session} root={this} />
       </Router>
   </div>;
   }
@@ -190,6 +210,7 @@ function Header(props) {
 
   function Login(props) {
     let {root} = props;
+    console.log(root);
       return <div>
     <form>
       <h1>Task Tracker !</h1>
@@ -204,8 +225,28 @@ function Header(props) {
       </div>
     </form>
     <button type="submit" className="btn btn-primary">Submit</button>
-    <p>Not Registered? <Link to={"/"}>Register</Link></p>
-    </div>;    
+
+
+    <p>Not Registered?</p> 
+        <button className="btn btn-primary" type="button" data-toggle="collapse" data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
+          Register
+        </button>
+
+    
+      <div className="collapse" id="registerUser">
+        <div className="card card-body">
+          <label>Email</label>
+          <form>
+          <input type="email" className="form-control" id="regUser" placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
+            <p></p>
+          <label>Password</label>
+          <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
+            <p></p>
+          </form>  
+          <button className="btn btn-primary" onClick={root.registerAccount.bind(root)}>Create Account</button>
+        </div> 
+      </div>
+  </div>;    
   }
 
   function TaskList(props) {
