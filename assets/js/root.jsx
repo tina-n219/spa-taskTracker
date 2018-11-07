@@ -55,6 +55,7 @@ class Root extends React.Component {
       }
 
       create_task() {
+        console.log("create Task");
         let title = $('#taskTitle').val();
         let desc = $('#taskDesc').val();
         console.log(title);
@@ -65,23 +66,12 @@ class Root extends React.Component {
           method: "post",
           dataType: "json",
           contentType: "application/json; charset=UTF-8",
-          data: JSON.stringify({tasks: {title, desc}}),
+          data: JSON.stringify({task: {title: title, description: desc}}),
           success: (resp) => {
             let task1 = _.concat(this.state.tasks, [resp.data]);
             let state1 = _.assign({}, this.state, { tasks: task1 });
             this.setState(state1);
           },
-        });
-        
-      }
-
-      send_post(path, req, on_success) {
-        $.ajax(path, {
-          method: "post",
-          dataType: "json",
-          contentType: "application/json; charset=UTF-8",
-          data: JSON.stringify(req),
-          success: on_success,
         });
       }
     
@@ -158,8 +148,9 @@ render() {
                 <option >Three</option>
               </select>
             </div> */}
-            <button className="btn btn-primary" onClick={() => this.create_task.bind(this)}>It's your problem now</button>
+            
           </form>
+          <button className="btn btn-primary" onClick={() => this.create_task()}>It's your problem now</button>
         </div>
         <p></p>
       </div>
