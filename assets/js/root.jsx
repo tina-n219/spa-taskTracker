@@ -70,15 +70,16 @@ render() {
   if(this.state.session == null) {
     return <div>
       <Router>
-        <div>
-          <Header root={this} />
-        </div>
+        <Login session={this.state.session} />
       </Router>
   </div>;
   }
   else { 
     return <div>
-      <Router>    
+      <Router>   
+          <div>
+            <Header root={this} />
+          </div> 
           <Route path="/" exact={true} render={() =>
             <TaskList tasks={this.state.tasks} />
           } />
@@ -101,27 +102,32 @@ function Header(props) {
       <p><Link to={"/users"} onClick={root.fetch_users.bind(root)}>Users</Link></p>
     </div>
     <div className="col-6">
-      <Login session={props.session} />
+      <p> User: {this.session.user_id}</p>
+      {/* <Login session={props.session} />  SHOULD BE LOGOUT*/}
     </div>
   </div>;
 
   }
 
   function Login(props) {
-    if (props.session == null) {
-      return <div className="form-inline my-2">
-      <input type="email" placeholder="email" />
-      <input type="password" placeholder="password" />
-      <button className="btn btn-secondary">Login</button>
+      return <form>
+      <h1>Task Tracker !</h1>
+      <div className="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></input>
+      </div>
       
-      <p>Not Registered? </p>
-    </div>;
-    }
-    else {
-        return <div className="form-inline my-2">
-        <p> User: {props.session.user_id}</p>
-      </div>;
-    }
+      <div className="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"></input>
+      </div>
+        
+      <button type="submit" class="btn btn-primary">Submit</button>
+
+      <p>Not Registered? <Link to={"/"}>Register</Link></p>
+
+    </form>;
+    
   }
 
   function TaskList(props) {
