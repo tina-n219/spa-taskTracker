@@ -15,12 +15,15 @@ class Root extends React.Component {
         this.state = {
             tasks: props.tasks,
             users: [],
+            session: null,
         };
 
     console.log("constructor");
 
     this.fetch_tasks();
     this.fetch_users();
+    //this.create_session("tina@example.com", "tinapass415");
+    console.log(this.state.session);
     }
 
     fetch_tasks() {
@@ -48,22 +51,43 @@ class Root extends React.Component {
             this.setState(state1);
           },
         });
-      }  
+      }
+      
+      create_session(email, password) {
+        $.ajax("/api/v1/sessions", {
+          method: "post",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: JSON.stringify({email, password}),
+          success: (resp) => {
+            let state1 = _.assign({}, this.state, { session: resp.data });
+            this.setState(state1);
+          }
+        });
+      }
 
 render() {
+  if(this.state.session == null) {
     return <div>
       <Router>
         <div>
           <Header root={this} />
+        </div>
+      </Router>
+  </div>;
+  }
+  else { 
+    return <div>
+      <Router>    
           <Route path="/" exact={true} render={() =>
             <TaskList tasks={this.state.tasks} />
           } />
           <Route path="/users" exact={true} render={() =>
             <UserList users={this.state.users} />
           } />
-        </div>
       </Router>
     </div>;
+    }
   }
 } 
 
@@ -77,14 +101,27 @@ function Header(props) {
       <p><Link to={"/users"} onClick={root.fetch_users.bind(root)}>Users</Link></p>
     </div>
     <div className="col-6">
-      <div className="form-inline my-2">
-        <input type="email" placeholder="email" />
-        <input type="password" placeholder="password" />
-        <button className="btn btn-secondary">Login</button>
-      </div>
+      <Login session={props.session} />
     </div>
   </div>;
 
+  }
+
+  function Login(props) {
+    if (props.session == null) {
+      return <div className="form-inline my-2">
+      <input type="email" placeholder="email" />
+      <input type="password" placeholder="password" />
+      <button className="btn btn-secondary">Login</button>
+      
+      <p>Not Registered? </p>
+    </div>;
+    }
+    else {
+        return <div className="form-inline my-2">
+        <p> User: {props.session.user_id}</p>
+      </div>;
+    }
   }
 
   function TaskList(props) {
@@ -98,8 +135,11 @@ function Header(props) {
     let {task} = props;
     return <div className="card col-4">
       <div className="card-body">
-        <h2 className="card-title">{task.title}</h2>
+        <h4 className="card-title">{task.title}</h4>
         <p className="card-text">{task.description}</p>
+        <p className="card-text">Time Spent: {task.duration}</p>
+        <p className="card-text">Completed: {task.completed ? "yes" : "no"}</p>
+
       </div>
     </div>;
   }
