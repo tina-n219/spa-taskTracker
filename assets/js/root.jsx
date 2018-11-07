@@ -53,6 +53,37 @@ class Root extends React.Component {
           }
         });
       }
+
+      create_task() {
+        let title = $('#taskTitle').val();
+        let desc = $('#taskDesc').val();
+        console.log(title);
+        console.log(desc);
+
+
+        $.ajax("/api/v1/tasks", {
+          method: "post",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: JSON.stringify({tasks: {title, desc}}),
+          success: (resp) => {
+            let task1 = _.concat(this.state.tasks, [resp.data]);
+            let state1 = _.assign({}, this.state, { tasks: task1 });
+            this.setState(state1);
+          },
+        });
+        
+      }
+
+      send_post(path, req, on_success) {
+        $.ajax(path, {
+          method: "post",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: JSON.stringify(req),
+          success: on_success,
+        });
+      }
     
 
       fetch_users() {
@@ -95,6 +126,44 @@ render() {
     <Router>
       <div>
         <Header root={this} />
+        <div>
+          <button className="btn btn-primary" type="button" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
+          Add New Task Yo - Mo Problems
+        </button>  
+        <p></p>
+      </div>
+
+      <div className="collapse" id="newTask">
+        <div className="card card-body">
+          <h2>Create a New Problem</h2>
+          <form>
+            <div>
+              <input type="text" className="form-control" id="taskTitle" placeholder="Title" aria-label="Task Title" aria-describedby="basic-addon2"></input>
+              <p></p>
+            </div>
+
+            <div>
+              <textarea className="form-control" id="taskDesc" placeholder="Description" aria-label="With textarea"></textarea>
+              <p></p>
+            </div>  
+
+            {/* <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <label className="input-group-text">Assign To</label>
+              </div>
+              <select className="custom-select" id="assignedTo">
+                <option defaultValue>Choose...</option>
+                <option >One</option>
+                <option >Two</option>
+                <option >Three</option>
+              </select>
+            </div> */}
+            <button className="btn btn-primary" onClick={() => this.create_task.bind(this)}>It's your problem now</button>
+          </form>
+        </div>
+        <p></p>
+      </div>
+
         <Route path="/" exact={true} render={() =>
           <TaskList tasks={this.state.tasks} root={this} />
         } />
@@ -162,7 +231,7 @@ function Header(props) {
         <p className="card-text">Time Spent: {task.duration}</p>
         <p className="card-text">Completed: {task.completed ? "yes" : "no"}</p>
         <button className="btn btn-warning"
-             onClick={() => root.remove_task(task.id)}>remove</button>
+             onClick={() => root.remove_task(task.id)}>Make your problems disappear</button>
       </div>
     </div>;
   }
