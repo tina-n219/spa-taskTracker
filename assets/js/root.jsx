@@ -103,7 +103,14 @@ class Root extends React.Component {
         });
       }
 
+
+
+
 render() {
+  let displayUsers = (user) => {
+    return <option key={user.id} value={user.id}>{user.email}</option>
+  }
+
   if(this.state.session != null) {
     return <div>
       <Router>
@@ -137,17 +144,14 @@ render() {
               <p></p>
             </div>  
 
-            {/* <div className="input-group mb-3">
+            <div className="input-group mb-3">
               <div className="input-group-prepend">
                 <label className="input-group-text">Assign To</label>
               </div>
               <select className="custom-select" id="assignedTo">
-                <option defaultValue>Choose...</option>
-                <option >One</option>
-                <option >Two</option>
-                <option >Three</option>
+                {this.state.users.map(displayUsers)}
               </select>
-            </div> */}
+            </div>
             
           </form>
           <button className="btn btn-primary" onClick={() => this.create_task()}>It's your problem now</button>
@@ -186,24 +190,22 @@ function Header(props) {
 
   function Login(props) {
     let {root} = props;
-      return <form>
+      return <div>
+    <form>
       <h1>Task Tracker !</h1>
       <div className="form-group">
         <label>Email address</label>
-        <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></input>
+        <input type="email" className="form-control" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email"></input>
       </div>
       
       <div className="form-group">
         <label>Password</label>
-        <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"></input>
+        <input type="password" className="form-control" id="userPassword" placeholder="Password"></input>
       </div>
-        
-      <button type="submit" className="btn btn-primary">Submit</button>
-
-      <p>Not Registered? <Link to={"/"}>Register</Link></p>
-
-    </form>;
-    
+    </form>
+    <button type="submit" className="btn btn-primary">Submit</button>
+    <p>Not Registered? <Link to={"/"}>Register</Link></p>
+    </div>;    
   }
 
   function TaskList(props) {
