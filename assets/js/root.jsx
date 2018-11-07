@@ -40,6 +40,21 @@ class Root extends React.Component {
         });
       }
 
+      remove_task(id) {
+        $.ajax("/api/v1/tasks/" + id, {
+          method: "delete",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: "",
+          success: (_resp) => {
+            let tasks1 = _.filter(this.state.tasks, (item) => item.id != id);
+            let state1 = _.assign({}, this.state, { tasks: tasks1 });
+            this.setState(state1);
+          }
+        });
+      }
+    
+
       fetch_users() {
         $.ajax("/api/v1/users", {
           method: "get",
@@ -52,8 +67,9 @@ class Root extends React.Component {
           },
         });
       }
-      
+
       create_session(email, password) {
+
         $.ajax("/api/v1/sessions", {
           method: "post",
           dataType: "json",
@@ -67,7 +83,7 @@ class Root extends React.Component {
       }
 
 render() {
-  if(this.state.session == null) {
+  if(this.state.session != null) {
     return <div>
       <Router>
         <Login session={this.state.session} />
@@ -76,18 +92,18 @@ render() {
   }
   else { 
     return <div>
-      <Router>   
-          <div>
-            <Header root={this} />
-          </div> 
-          <Route path="/" exact={true} render={() =>
-            <TaskList tasks={this.state.tasks} />
-          } />
-          <Route path="/users" exact={true} render={() =>
-            <UserList users={this.state.users} />
-          } />
-      </Router>
-    </div>;
+    <Router>
+      <div>
+        <Header root={this} />
+        <Route path="/" exact={true} render={() =>
+          <TaskList tasks={this.state.tasks} root={this} />
+        } />
+        <Route path="/users" exact={true} render={() =>
+          <UserList users={this.state.users} />
+        } />
+      </div>
+    </Router>
+  </div>;
     }
   }
 } 
@@ -99,30 +115,30 @@ function Header(props) {
       <h1><Link to={"/"}>Task Tracker !</Link></h1>
     </div>
     <div className="col-2">
-      <p><Link to={"/users"} onClick={root.fetch_users.bind(root)}>Users</Link></p>
+      <p><Link to={"/users"} className="btn btn-primary" onClick={root.fetch_users.bind(root)}>Users</Link></p>
     </div>
-    <div className="col-6">
-      <p> User: {this.session.user_id}</p>
-      {/* <Login session={props.session} />  SHOULD BE LOGOUT*/}
+    <div className="col-4">
+     <button type="submit" className="btn btn-dark">Logout</button>
     </div>
   </div>;
 
   }
 
   function Login(props) {
+    let {root} = props;
       return <form>
       <h1>Task Tracker !</h1>
       <div className="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></input>
+        <label>Email address</label>
+        <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></input>
       </div>
       
       <div className="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"></input>
+        <label>Password</label>
+        <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"></input>
       </div>
         
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" className="btn btn-primary">Submit</button>
 
       <p>Not Registered? <Link to={"/"}>Register</Link></p>
 
@@ -131,21 +147,22 @@ function Header(props) {
   }
 
   function TaskList(props) {
-    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} />);
+    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} root={props.root} />);
     return <div className="row">
       {tasks}
     </div>;
   }
 
   function Task(props) {
-    let {task} = props;
+    let {root, task} = props;
     return <div className="card col-4">
       <div className="card-body">
         <h4 className="card-title">{task.title}</h4>
         <p className="card-text">{task.description}</p>
         <p className="card-text">Time Spent: {task.duration}</p>
         <p className="card-text">Completed: {task.completed ? "yes" : "no"}</p>
-
+        <button className="btn btn-warning"
+             onClick={() => root.remove_task(task.id)}>remove</button>
       </div>
     </div>;
   }
