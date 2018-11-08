@@ -72,6 +72,27 @@ class Root extends React.Component {
         });
       }
 
+      save_task(taskId) {
+        let editTime = $('#editTimeSpent' + taskId).val();
+        let editUser = $('#editTaskUser' + taskId).val();
+        let editStatus = $('#editTaskStatus' + taskId).val();
+        let editTitle = $('#editTitle' + taskId).val();
+        let editDesc = $('#editDesc' + taskId).val();
+
+        $.ajax("/api/v1/tasks/" + taskId, {
+          method: "put",
+          dataType: "json",
+          contentType: "application/json; charset=UTF-8",
+          data: JSON.stringify({task: {title: editTitle, description: editDesc, 
+                completed: editStatus, duration: editTime, user_id: editUser}}),
+          success: (resp) => {
+            let task1 = _.concat(this.state.tasks, [resp.data]);
+            let state1 = _.assign({}, this.state, { tasks: task1 });
+            this.setState(state1);
+          },
+        });
+      }
+
       fetch_users() {
         $.ajax("/api/v1/users", {
           method: "get",
@@ -255,26 +276,27 @@ function Header(props) {
   }
 
   function Task(props) {
-
     let {root, task, users} = props;
     let displayUsers = (user) => {
       return <option key={user.id} value={user.id}>{user.email}</option>
     }
+
     return <div className="card col-4">
       <div className="card-body">
-        <h4 className="card-title">{task.title}</h4>
-        <p className="card-text">{task.description}</p>
 
-        Time Spent: <input type="number" defaultValue={task.duration} step='15'></input>
+        <h4 className="card-title" id="editTitle">{task.title}</h4>
+        <p className="card-text" id="editDesc">{task.description}</p>
 
-        <select className="custom-select" id="assignedTo">
-                {users.map(displayUsers)}
+        Time Spent: <input type="number" id={"editTimeSpent" + task.id} defaultValue={task.duration} step='15'></input>
+
+        <select className="custom-select" id={"editTaskUser" + task.id}>
+          {users.map(displayUsers)}
         </select>
 
 
-        <div class="form-check form-check-inline">
-          <label class="form-check-label">Completed?</label>
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" defaultValue={task.completed}></input>
+        <div className="form-check form-check-inline">
+          <label className="form-check-label">Completed?</label>
+          <input className="form-check-input" type="checkbox" id={"editTaskStatus" + task.id} defaultValue={task.completed}></input>
         </div>
 
         <button className="btn btn-warning"
@@ -282,8 +304,7 @@ function Header(props) {
              <p></p>
 
         <button id="taskSaveBtn"  className="btn btn-outline-success" 
-              onClick={() => root.save_task(task.id)}>Save your problems</button>       
-              
+              onClick={() => root.save_task(task.id)}>Save your problems</button>        
       </div>
     </div>;
   }
