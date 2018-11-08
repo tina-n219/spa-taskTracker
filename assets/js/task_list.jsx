@@ -1,7 +1,9 @@
 import React from 'react';
 
+import api from './api';
+
 export default function TaskList(props) {
-    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} root={props.root} />);
+    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} />);
     return <div className="row">
       {tasks}
     </div>;
@@ -9,7 +11,7 @@ export default function TaskList(props) {
 
   // Makes cards for tasks
   function Task(props) {
-    let {root, task, users} = props;
+    let {task, users} = props;
     let displayUsers = (user) => {
       return <option key={user.id} value={user.id}>{user.email}</option>
     }
@@ -33,11 +35,11 @@ export default function TaskList(props) {
         </div>
 
         <button className="btn btn-warning"
-             onClick={() => root.remove_task(task.id)}>Make your problems disappear</button>
+             onClick={() => api.remove_task(task.id)}>Make your problems disappear</button>
              <p></p>
 
         <button id="taskSaveBtn"  className="btn btn-outline-success" 
-              onClick={() => root.save_task(task.id)}>Save your problems</button>        
+              onClick={() => api.save_task(task.id)}>Save your problems</button>        
       </div>
     </div>;
 }

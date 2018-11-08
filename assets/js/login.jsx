@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Login (props) {
+import api from './api'
+
+export default function Login () {
 // Login page
-let {root} = props;
-console.log(root);
     return <div>
 <form>
     <h1>Task Tracker !</h1>
@@ -21,7 +21,7 @@ console.log(root);
     </div>
 </form>
 
-<button  className="btn btn-primary" onClick={root.create_session.bind(root)}>Submit</button>
+<button  className="btn btn-primary" onClick={api.create_session}>Submit</button>
 
 <p>Not Registered?</p> 
 <button className="btn btn-primary" type="button" data-toggle="collapse" 
@@ -41,7 +41,7 @@ console.log(root);
     <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
         <p></p>
     </form>  
-    <button className="btn btn-primary" onClick={root.registerAccount.bind(root)}>Create Account</button>
+    <button className="btn btn-primary" onClick={api.registerAccount}>Create Account</button>
     </div> 
 </div>
 </div>;    
