@@ -14,6 +14,12 @@ alias SpaTaskTracker.Users.User
 alias SpaTaskTracker.Tasks.Task
 
 pwhash = Argon2.hash_pwd_salt("pass1")
+pwhash2 = Argon2.hash_pwd_salt("pass2")
+pwhash3 = Argon2.hash_pwd_salt("tinapass415")
 
 Repo.insert!(%User{email: "alice@example.com", password_hash: pwhash})
-Repo.insert!(%Task{title: "spa", description: "blah", duration: 15, user_id: 1})
+Repo.insert!(%User{email: "bob@example.com", password_hash: pwhash2})
+Repo.insert!(%User{email: "tina@example.com", password_hash: pwhash3})
+
+Repo.insert!(%Task{title: "Complete Web Dev SPA", description: "Create a single page application, this will entail a lot of stuff i don't know", duration: 1500, completed: false, user_id: 3})
+Repo.insert!(%Task{title: "Typography Book", description: "Make spreads for the entire book!", duration: 200, completed: false, user_id: 3})

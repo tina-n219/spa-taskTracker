@@ -79,6 +79,8 @@ class Root extends React.Component {
         let editTitle = $('#editTitle' + taskId).val();
         let editDesc = $('#editDesc' + taskId).val();
 
+        console.log(editStatus);
+
         $.ajax("/api/v1/tasks/" + taskId, {
           method: "put",
           dataType: "json",
@@ -106,18 +108,27 @@ class Root extends React.Component {
         });
       }
 
-      create_session(email, password) {
+      create_session() {
+        let email = $('#userEmail').val();
+        let password = $('#userPassword').val();
 
         $.ajax("/api/v1/sessions", {
           method: "post",
           dataType: "json",
           contentType: "application/json; charset=UTF-8",
-          data: JSON.stringify({email, password}),
+          data: JSON.stringify({email: email, password: password}),
           success: (resp) => {
+            console.log("login");
             let state1 = _.assign({}, this.state, { session: resp.data });
             this.setState(state1);
           }
         });
+      }
+
+      logout_user() {
+        console.log("logout")
+        let state1 = _.assign({}, this.state, { session: null });
+        this.setState(state1);
       }
 
       registerAccount() {
@@ -147,7 +158,7 @@ render() {
     return <option key={user.id} value={user.id}>{user.email}</option>
   }
 
-  if(this.state.session != null) {
+  if(this.state.session == null) {
     return <div>
       <Router>
         <Login session={this.state.session} root={this} />
@@ -210,6 +221,7 @@ render() {
 
 function Header(props) {
   let {root} = props;
+
   return <div className="row my-2">
     <div className="col-4">
       <h1><Link to={"/"}>Task Tracker !</Link></h1>
@@ -218,7 +230,7 @@ function Header(props) {
       <p><Link to={"/users"} className="btn btn-primary" onClick={root.fetch_users.bind(root)}>Users</Link></p>
     </div>
     <div className="col-4">
-     <button type="submit" className="btn btn-dark">Logout</button>
+     <button className="btn btn-dark" onClick={root.logout_user.bind(root)}>Logout</button>
     </div>
   </div>;
 
@@ -242,7 +254,7 @@ function Header(props) {
                 id="userPassword" placeholder="Password"></input>
       </div>
     </form>
-    <button type="submit" className="btn btn-primary">Submit</button>
+    <button  className="btn btn-primary" onClick={root.create_session.bind(root)}>Submit</button>
 
     <p>Not Registered?</p> 
         <button className="btn btn-primary" type="button" data-toggle="collapse" 

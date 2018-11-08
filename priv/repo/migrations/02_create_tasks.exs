@@ -11,7 +11,6 @@ defmodule SpaTaskTracker.Repo.Migrations.CreateTasks do
 
       timestamps()
     end
-
-    create index(:tasks, [:user_id], unique: true)
+      create index(:tasks, [:user_id])
   end
 end
