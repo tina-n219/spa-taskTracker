@@ -11,6 +11,7 @@ fetch_tasks() {
         contentType: "application/json; charset=UTF-8",
         data: "",
         success: (resp) => {
+            console.log(resp);
             store.dispatch({
                 type: 'FETCH_TASKS',
                 data: resp.data,

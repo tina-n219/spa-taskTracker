@@ -16,13 +16,14 @@ import deepFreeze from 'deep-freeze';
 
 function tasks(state = [], action) {
     switch(action.type) {
-        case 'FETCH_TASK':
+        case 'FETCH_TASKS':
             return action.data;
-        case 'CREATE_TASK':
-            
-        case 'REMOVE_TASK':
 
-        case 'SAVE_TASK':
+        // case 'CREATE_TASK':
+            
+        // case 'REMOVE_TASK':
+
+        // case 'SAVE_TASK':
 
         default:
             return state;    
@@ -57,7 +58,7 @@ function tasks(state = [], action) {
   function root_reducer(state0, action) {
     console.log("reducer", state0, action);
   
-    let reducer = combineReducers({tasks, users, session,});
+    let reducer = combineReducers({tasks, users, session});
     let state1 = reducer(state0, action);
   
     console.log("reducer1", state1);

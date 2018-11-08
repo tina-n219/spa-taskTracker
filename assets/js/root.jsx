@@ -13,10 +13,10 @@ import TaskList from './task_list';
 import api from './api';
 
 export default function root_init(node) {
-  let ConnectedRoot = connect(stateToProps)(Root);
+  let ConnectedRoot = connect((state) => state)(Root);
   ReactDOM.render(
     <Provider store={store}>
-      <ConnectedRoot tasks={window.tasks} />
+      <ConnectedRoot  />
     </Provider>, node);
   }
 
@@ -111,9 +111,7 @@ render() {
 } 
 
 // this state is the state in redux, which will be used as props in react components
-function stateToProps(state) {
-  return state;
-}
+
   
 
   

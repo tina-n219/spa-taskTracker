@@ -1,8 +1,12 @@
 import React from 'react';
 
 import api from './api';
+import store from './store';
+import { connect } from 'react-redux';
 
-export default function TaskList(props) {
+function TaskList(props) {
+
+
     let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} />);
     return <div className="row">
       {tasks}
@@ -43,3 +47,15 @@ export default function TaskList(props) {
       </div>
     </div>;
 }
+
+function stateToprops(state) {
+    console.log("rerender", state);
+    return {
+      tasks: state.tasks,
+      users: state.users,
+      session: state.session,
+    };
+  }
+  
+  // Export result of curried function call.
+  export default connect(stateToprops)(TaskList);
