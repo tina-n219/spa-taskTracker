@@ -58,9 +58,6 @@ class Root extends React.Component {
         console.log("create Task");
         let title = $('#taskTitle').val();
         let desc = $('#taskDesc').val();
-        console.log(title);
-        console.log(desc);
-
 
         $.ajax("/api/v1/tasks", {
           method: "post",
@@ -74,7 +71,6 @@ class Root extends React.Component {
           },
         });
       }
-    
 
       fetch_users() {
         $.ajax("/api/v1/users", {
@@ -106,8 +102,7 @@ class Root extends React.Component {
       registerAccount() {
         let email = $('#regUser').val();
         let pass = $('#regPassword').val();
-        console.log(email);
-        console.log(pass);
+
         let newuser = {email: email, password_hash: pass};
 
         $.ajax("/api/v1/users", {
@@ -131,7 +126,7 @@ render() {
     return <option key={user.id} value={user.id}>{user.email}</option>
   }
 
-  if(this.state.session == null) {
+  if(this.state.session != null) {
     return <div>
       <Router>
         <Login session={this.state.session} root={this} />
@@ -180,7 +175,7 @@ render() {
       </div>
 
         <Route path="/" exact={true} render={() =>
-          <TaskList tasks={this.state.tasks} root={this} />
+          <TaskList tasks={this.state.tasks} users={this.state.users} root={this} />
         } />
         <Route path="/users" exact={true} render={() =>
           <UserList users={this.state.users} />
@@ -216,19 +211,21 @@ function Header(props) {
       <h1>Task Tracker !</h1>
       <div className="form-group">
         <label>Email address</label>
-        <input type="email" className="form-control" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email"></input>
+        <input type="email" className="form-control" id="userEmail" 
+                aria-describedby="emailHelp" placeholder="Enter email"></input>
       </div>
       
       <div className="form-group">
         <label>Password</label>
-        <input type="password" className="form-control" id="userPassword" placeholder="Password"></input>
+        <input type="password" className="form-control" 
+                id="userPassword" placeholder="Password"></input>
       </div>
     </form>
     <button type="submit" className="btn btn-primary">Submit</button>
 
-
     <p>Not Registered?</p> 
-        <button className="btn btn-primary" type="button" data-toggle="collapse" data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
+        <button className="btn btn-primary" type="button" data-toggle="collapse" 
+                data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
           Register
         </button>
 
@@ -237,7 +234,8 @@ function Header(props) {
         <div className="card card-body">
           <label>Email</label>
           <form>
-          <input type="email" className="form-control" id="regUser" placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
+          <input type="email" className="form-control" id="regUser" 
+                 placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
             <p></p>
           <label>Password</label>
           <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
@@ -250,22 +248,42 @@ function Header(props) {
   }
 
   function TaskList(props) {
-    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} root={props.root} />);
+    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} root={props.root} />);
     return <div className="row">
       {tasks}
     </div>;
   }
 
   function Task(props) {
-    let {root, task} = props;
+
+    let {root, task, users} = props;
+    let displayUsers = (user) => {
+      return <option key={user.id} value={user.id}>{user.email}</option>
+    }
     return <div className="card col-4">
       <div className="card-body">
         <h4 className="card-title">{task.title}</h4>
         <p className="card-text">{task.description}</p>
-        <p className="card-text">Time Spent: {task.duration}</p>
-        <p className="card-text">Completed: {task.completed ? "yes" : "no"}</p>
+
+        Time Spent: <input type="number" defaultValue={task.duration} step='15'></input>
+
+        <select className="custom-select" id="assignedTo">
+                {users.map(displayUsers)}
+        </select>
+
+
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">Completed?</label>
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" defaultValue={task.completed}></input>
+        </div>
+
         <button className="btn btn-warning"
              onClick={() => root.remove_task(task.id)}>Make your problems disappear</button>
+             <p></p>
+
+        <button id="taskSaveBtn"  className="btn btn-outline-success" 
+              onClick={() => root.save_task(task.id)}>Save your problems</button>       
+              
       </div>
     </div>;
   }
