@@ -132,12 +132,9 @@ fetch_tasks() {
         data: JSON.stringify({user: newuser}),
         success: (resp) => {
             store.dispatch({
-                type: 'REGISTER_ACCOUNT',
+                type: 'CREATE_SESSION',
                 data: resp.data,
-                email: email,
-                password: pass,
-                newUser: newuser,
-            })
+            });
         }
       });
     }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import $ from 'jquery';
 import { Provider, connect } from 'react-redux';
-import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import store from './store';
 import Header from './header';
