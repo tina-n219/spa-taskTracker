@@ -17,15 +17,13 @@ class Root extends React.Component {
             users: [],
             session: null,
         };
-
-    console.log("constructor");
-
+        
     this.fetch_tasks();
     this.fetch_users();
-    //this.create_session("tina@example.com", "tinapass415");
     console.log(this.state.session);
     }
 
+    // Gets the tasks in the database via ajax
     fetch_tasks() {
       console.log("fetch")
         $.ajax("/api/v1/tasks", {
@@ -40,6 +38,8 @@ class Root extends React.Component {
         });
       }
 
+
+      // Remove a task from the database
       remove_task(id) {
         $.ajax("/api/v1/tasks/" + id, {
           method: "delete",
@@ -54,6 +54,8 @@ class Root extends React.Component {
         });
       }
 
+      // Create a new task and add it to the database
+      // Title is only required
       create_task() {
         console.log("create Task");
         let title = $('#taskTitle').val();
@@ -72,14 +74,14 @@ class Root extends React.Component {
         });
       }
 
+      // Triggered when a user presses save button
+      // Save any edits made to a task
       save_task(taskId) {
         let editTime = $('#editTimeSpent' + taskId).val();
         let editUser = $('#editTaskUser' + taskId).val();
         let editStatus = $('#editTaskStatus' + taskId).val();
         let editTitle = $('#editTitle' + taskId).val();
         let editDesc = $('#editDesc' + taskId).val();
-
-        console.log(editStatus);
 
         $.ajax("/api/v1/tasks/" + taskId, {
           method: "put",
@@ -95,6 +97,7 @@ class Root extends React.Component {
         });
       }
 
+      // Gets the users from the database via ajax
       fetch_users() {
         $.ajax("/api/v1/users", {
           method: "get",
@@ -108,6 +111,7 @@ class Root extends React.Component {
         });
       }
 
+      // Create a session when a user puts in login info
       create_session() {
         let email = $('#userEmail').val();
         let password = $('#userPassword').val();
@@ -125,12 +129,16 @@ class Root extends React.Component {
         });
       }
 
+      // Triggered when users presses logout button
+      // Sets session to null, which will then take you back to login page. 
       logout_user() {
         console.log("logout")
         let state1 = _.assign({}, this.state, { session: null });
         this.setState(state1);
       }
 
+      // Triggeres when a user presses register button
+      // Adds a user to database
       registerAccount() {
         let email = $('#regUser').val();
         let pass = $('#regPassword').val();
@@ -154,17 +162,21 @@ class Root extends React.Component {
 
 
 render() {
+  // Map of users that exists in database
   let displayUsers = (user) => {
     return <option key={user.id} value={user.id}>{user.email}</option>
   }
 
+  // If the session is null, aka no one is logged in, show login page
   if(this.state.session == null) {
     return <div>
       <Router>
         <Login session={this.state.session} root={this} />
       </Router>
-  </div>;
+    </div>;
   }
+
+  // Otherwise, show the tasks homepage
   else { 
     return <div>
     <Router>
@@ -177,6 +189,7 @@ render() {
         <p></p>
       </div>
 
+      {/* Drop down for creating a new task */}
       <div className="collapse" id="newTask">
         <div className="card card-body">
           <h2>Create a New Problem</h2>
@@ -206,9 +219,12 @@ render() {
         <p></p>
       </div>
 
+        {/* Displays tasks existing in database */}
         <Route path="/" exact={true} render={() =>
           <TaskList tasks={this.state.tasks} users={this.state.users} root={this} />
         } />
+
+        {/* Displays the existing users in the databse, under the route /users */}
         <Route path="/users" exact={true} render={() =>
           <UserList users={this.state.users} />
         } />
@@ -219,6 +235,7 @@ render() {
   }
 } 
 
+// The Top of the webpage
 function Header(props) {
   let {root} = props;
 
@@ -236,12 +253,14 @@ function Header(props) {
 
   }
 
+  // Login page
   function Login(props) {
     let {root} = props;
     console.log(root);
       return <div>
     <form>
       <h1>Task Tracker !</h1>
+
       <div className="form-group">
         <label>Email address</label>
         <input type="email" className="form-control" id="userEmail" 
@@ -254,32 +273,34 @@ function Header(props) {
                 id="userPassword" placeholder="Password"></input>
       </div>
     </form>
+
     <button  className="btn btn-primary" onClick={root.create_session.bind(root)}>Submit</button>
 
     <p>Not Registered?</p> 
-        <button className="btn btn-primary" type="button" data-toggle="collapse" 
-                data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
-          Register
-        </button>
+    <button className="btn btn-primary" type="button" data-toggle="collapse" 
+            data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
+      Register
+    </button>
 
-    
-      <div className="collapse" id="registerUser">
-        <div className="card card-body">
-          <label>Email</label>
-          <form>
-          <input type="email" className="form-control" id="regUser" 
-                 placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
-            <p></p>
-          <label>Password</label>
-          <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
-            <p></p>
-          </form>  
-          <button className="btn btn-primary" onClick={root.registerAccount.bind(root)}>Create Account</button>
-        </div> 
-      </div>
+    {/* Drop down for registering as a new user */}
+    <div className="collapse" id="registerUser">
+      <div className="card card-body">
+        <label>Email</label>
+        <form>
+        <input type="email" className="form-control" id="regUser" 
+                placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
+          <p></p>
+        <label>Password</label>
+        <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
+          <p></p>
+        </form>  
+        <button className="btn btn-primary" onClick={root.registerAccount.bind(root)}>Create Account</button>
+      </div> 
+    </div>
   </div>;    
   }
 
+  // Lists the existing tasks in database
   function TaskList(props) {
     let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} root={props.root} />);
     return <div className="row">
@@ -287,6 +308,7 @@ function Header(props) {
     </div>;
   }
 
+  // Makes cards for tasks
   function Task(props) {
     let {root, task, users} = props;
     let displayUsers = (user) => {

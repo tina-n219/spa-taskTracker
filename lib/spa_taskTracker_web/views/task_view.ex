@@ -15,6 +15,7 @@ defmodule SpaTaskTrackerWeb.TaskView do
       title: task.title,
       description: task.description,
       completed: task.completed,
-      duration: task.duration}
+      duration: task.duration,
+      user_id: task.user_id,}
   end
 end
