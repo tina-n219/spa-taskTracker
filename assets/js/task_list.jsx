@@ -29,7 +29,7 @@ export default function TaskList(props) {
 
         <div className="form-check form-check-inline">
           <label className="form-check-label">Completed?</label>
-          <input className="form-check-input" type="checkbox" id={"editTaskStatus" + task.id} defaultValue={task.completed}></input>
+          <input className="form-check-input" type="checkbox" id={"editTaskStatus" + task.id} defaultChecked={task.completed}></input>
         </div>
 
         <button className="btn btn-warning"
