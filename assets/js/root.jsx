@@ -17,7 +17,7 @@ class Root extends React.Component {
             users: [],
             session: null,
         };
-        
+
     this.fetch_tasks();
     this.fetch_users();
     console.log(this.state.session);
@@ -90,8 +90,10 @@ class Root extends React.Component {
           data: JSON.stringify({task: {title: editTitle, description: editDesc, 
                 completed: editStatus, duration: editTime, user_id: editUser}}),
           success: (resp) => {
-            let task1 = _.concat(this.state.tasks, [resp.data]);
-            let state1 = _.assign({}, this.state, { tasks: task1 });
+            let copy = this.state.tasks.slice(0);
+            let taskIndex = this.state.tasks.findIndex((task) => task.id == taskId);
+            copy[taskIndex] = resp.data;
+            let state1 = _.assign({}, this.state, { tasks: copy });
             this.setState(state1);
           },
         });
@@ -323,7 +325,7 @@ function Header(props) {
 
         Time Spent: <input type="number" id={"editTimeSpent" + task.id} defaultValue={task.duration} step='15'></input>
 
-        <select className="custom-select" id={"editTaskUser" + task.id}>
+        <select className="custom-select" defaultValue={task.user_id} id={"editTaskUser" + task.id}>
           {users.map(displayUsers)}
         </select>
 
