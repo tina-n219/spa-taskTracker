@@ -1,5 +1,6 @@
 import { createStore, combineReducers } from 'redux';
 import deepFreeze from 'deep-freeze';
+import _ from 'lodash';
 
 /*
   Application state layout
@@ -21,8 +22,8 @@ function tasks(state = [], action) {
 
         // case 'CREATE_TASK':
             
-        // case 'REMOVE_TASK':
-
+        case 'REMOVE_TASK':
+            return _.filter(state, (item) => item.id != action.taskId);
         // case 'SAVE_TASK':
 
         default:

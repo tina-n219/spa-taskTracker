@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 function TaskList(props) {
 
 
-    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} />);
+    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} session={props.session} />);
     return <div className="row">
       {tasks}
     </div>;
@@ -15,10 +15,14 @@ function TaskList(props) {
 
   // Makes cards for tasks
   function Task(props) {
-    let {task, users} = props;
+    let {task, users, session} = props;
     let displayUsers = (user) => {
       return <option key={user.id} value={user.id}>{user.email}</option>
     }
+
+    let timeSpent = session.user_id == task.user_id ?
+        <p>Time Spent: <input type="number" id={"editTimeSpent" + task.id} defaultValue={task.duration} step='15'></input></p>
+        : null;
 
     return <div className="card col-4">
       <div className="card-body">
@@ -26,12 +30,14 @@ function TaskList(props) {
         <h4 className="card-title" id="editTitle">{task.title}</h4>
         <p className="card-text" id="editDesc">{task.description}</p>
 
-        Time Spent: <input type="number" id={"editTimeSpent" + task.id} defaultValue={task.duration} step='15'></input>
+
+        
 
         <select className="custom-select" defaultValue={task.user_id} id={"editTaskUser" + task.id}>
           {users.map(displayUsers)}
         </select>
 
+        {timeSpent}
 
         <div className="form-check form-check-inline">
           <label className="form-check-label">Completed?</label>

@@ -16,8 +16,6 @@ fetch_tasks() {
                 type: 'FETCH_TASKS',
                 data: resp.data,
             });
-        //   let state1 = _.assign({}, this.state, { tasks: resp.data });
-        //   this.setState(state1);
         },
       });
     }
@@ -30,14 +28,7 @@ fetch_tasks() {
         contentType: "application/json; charset=UTF-8",
         data: "",
         success: (_resp) => {
-            store.dispatch({
-                type: 'REMOVE_TASK',
-                data: _resp,
-                taskId: id,
-            })
-        //   let tasks1 = _.filter(this.state.tasks, (item) => item.id != id);
-        //   let state1 = _.assign({}, this.state, { tasks: tasks1 });
-        //   this.setState(state1);
+            this.fetch_tasks();
         }
       });
     }
@@ -55,14 +46,7 @@ fetch_tasks() {
         contentType: "application/json; charset=UTF-8",
         data: JSON.stringify({task: {title: title, description: desc}}),
         success: (resp) => {
-            store.dispatch({
-                type: 'CREATE_TASK',
-                data: resp.data,
-
-            });
-        //   let task1 = _.concat(this.state.tasks, [resp.data]);
-        //   let state1 = _.assign({}, this.state, { tasks: task1 });
-        //   this.setState(state1);
+            this.fetch_tasks();
         },
       });
     }
@@ -84,16 +68,7 @@ fetch_tasks() {
         data: JSON.stringify({task: {title: editTitle, description: editDesc, 
               completed: editStatus, duration: editTime, user_id: editUser}}),
         success: (resp) => {
-            store.dispatch({
-                type: 'SAVE_TASK',
-                data: resp.data,
-                copy: this.state.tasks.slice(0),
-                taskIndex: this.state.tasks.findIndex((task) => task.id == taskId),
-                taskId: taskId
-            });
-        //   copy[taskIndex] = resp.data;
-        //   let state1 = _.assign({}, this.state, { tasks: copy });
-        //   this.setState(state1);
+            this.fetch_tasks();
         },
       });
     }
@@ -140,9 +115,6 @@ fetch_tasks() {
             type:'LOGOUT',
             data: null,
         })
-    //   console.log("logout")
-    //   let state1 = _.assign({}, this.state, { session: null });
-    //   this.setState(state1);
     }
 
     // Triggeres when a user presses register button
@@ -166,9 +138,6 @@ fetch_tasks() {
                 password: pass,
                 newUser: newuser,
             })
-        //   console.log("succussful registration");
-        //   let state1 = _.assign({}, this.state, { session: resp.data });
-        //   this.setState(state1);
         }
       });
     }
