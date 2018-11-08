@@ -4,6 +4,11 @@ import _ from 'lodash';
 import $ from 'jquery';
 import { Link, BrowserRouter as Router, Route } from 'react-router-dom';
 
+import Header from './header';
+import Login from './login';
+import UserList from './user_list';
+import TaskList from './task_list';
+
 export default function root_init(node) {
     let tasks = window.tasks;
     ReactDOM.render(<Root tasks={tasks} />, node);
@@ -20,7 +25,6 @@ class Root extends React.Component {
 
     this.fetch_tasks();
     this.fetch_users();
-    console.log(this.state.session);
     }
 
     // Gets the tasks in the database via ajax
@@ -185,7 +189,8 @@ render() {
       <div>
         <Header root={this} />
         <div>
-          <button className="btn btn-primary" type="button" data-toggle="collapse" data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
+          <button className="btn btn-primary" type="button" data-toggle="collapse" 
+                  data-target="#newTask" aria-expanded="false" aria-controls="collapseExample">
           Add New Task Yo - Mo Problems
         </button>  
         <p></p>
@@ -197,12 +202,14 @@ render() {
           <h2>Create a New Problem</h2>
           <form>
             <div>
-              <input type="text" className="form-control" id="taskTitle" placeholder="Title" aria-label="Task Title" aria-describedby="basic-addon2"></input>
+              <input type="text" className="form-control" id="taskTitle" 
+                    placeholder="Title" aria-label="Task Title" aria-describedby="basic-addon2"></input>
               <p></p>
             </div>
 
             <div>
-              <textarea className="form-control" id="taskDesc" placeholder="Description" aria-label="With textarea"></textarea>
+              <textarea className="form-control" id="taskDesc" 
+                        placeholder="Description" aria-label="With textarea"></textarea>
               <p></p>
             </div>  
 
@@ -237,138 +244,6 @@ render() {
   }
 } 
 
-// The Top of the webpage
-function Header(props) {
-  let {root} = props;
+  
 
-  return <div className="row my-2">
-    <div className="col-4">
-      <h1><Link to={"/"}>Task Tracker !</Link></h1>
-    </div>
-    <div className="col-2">
-      <p><Link to={"/users"} className="btn btn-primary" onClick={root.fetch_users.bind(root)}>Users</Link></p>
-    </div>
-    <div className="col-4">
-     <button className="btn btn-dark" onClick={root.logout_user.bind(root)}>Logout</button>
-    </div>
-  </div>;
-
-  }
-
-  // Login page
-  function Login(props) {
-    let {root} = props;
-    console.log(root);
-      return <div>
-    <form>
-      <h1>Task Tracker !</h1>
-
-      <div className="form-group">
-        <label>Email address</label>
-        <input type="email" className="form-control" id="userEmail" 
-                aria-describedby="emailHelp" placeholder="Enter email"></input>
-      </div>
-      
-      <div className="form-group">
-        <label>Password</label>
-        <input type="password" className="form-control" 
-                id="userPassword" placeholder="Password"></input>
-      </div>
-    </form>
-
-    <button  className="btn btn-primary" onClick={root.create_session.bind(root)}>Submit</button>
-
-    <p>Not Registered?</p> 
-    <button className="btn btn-primary" type="button" data-toggle="collapse" 
-            data-target="#registerUser" aria-expanded="false" aria-controls="collapseExample">
-      Register
-    </button>
-
-    {/* Drop down for registering as a new user */}
-    <div className="collapse" id="registerUser">
-      <div className="card card-body">
-        <label>Email</label>
-        <form>
-        <input type="email" className="form-control" id="regUser" 
-                placeholder="Email" aria-label="Task Title" aria-describedby="basic-addon2"></input>
-          <p></p>
-        <label>Password</label>
-        <input type="password" className="form-control" id="regPassword" placeholder="Password"></input>
-          <p></p>
-        </form>  
-        <button className="btn btn-primary" onClick={root.registerAccount.bind(root)}>Create Account</button>
-      </div> 
-    </div>
-  </div>;    
-  }
-
-  // Lists the existing tasks in database
-  function TaskList(props) {
-    let tasks = _.map(props.tasks, (t) => <Task key={t.id} task={t} users={props.users} root={props.root} />);
-    return <div className="row">
-      {tasks}
-    </div>;
-  }
-
-  // Makes cards for tasks
-  function Task(props) {
-    let {root, task, users} = props;
-    let displayUsers = (user) => {
-      return <option key={user.id} value={user.id}>{user.email}</option>
-    }
-
-    return <div className="card col-4">
-      <div className="card-body">
-
-        <h4 className="card-title" id="editTitle">{task.title}</h4>
-        <p className="card-text" id="editDesc">{task.description}</p>
-
-        Time Spent: <input type="number" id={"editTimeSpent" + task.id} defaultValue={task.duration} step='15'></input>
-
-        <select className="custom-select" defaultValue={task.user_id} id={"editTaskUser" + task.id}>
-          {users.map(displayUsers)}
-        </select>
-
-
-        <div className="form-check form-check-inline">
-          <label className="form-check-label">Completed?</label>
-          <input className="form-check-input" type="checkbox" id={"editTaskStatus" + task.id} defaultValue={task.completed}></input>
-        </div>
-
-        <button className="btn btn-warning"
-             onClick={() => root.remove_task(task.id)}>Make your problems disappear</button>
-             <p></p>
-
-        <button id="taskSaveBtn"  className="btn btn-outline-success" 
-              onClick={() => root.save_task(task.id)}>Save your problems</button>        
-      </div>
-    </div>;
-  }
-
-  function UserList(props) {
-    let rows = _.map(props.users, (uu) => <User key={uu.id} user={uu} />);
-    return <div className="row">
-      <div className="col-12">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-      </div>
-    </div>;
-  }
-
-   function User(props) {
-    let {user} = props;
-    return <tr>
-      <td>{user.id}</td>
-      <td>{user.email}</td>
-    </tr>;
-  }
   
